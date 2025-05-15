@@ -109,17 +109,17 @@ Once the application is running, you can access:
 
 1. Build the Docker image:
    ```bash
-   docker build -t docu_read .
+   docker build -t backend_template .
    ```
 
 2. Run the container:
    ```bash
-   docker run -p 8000:8000 docu_read
+   docker run -p 8000:8000 backend_template 
    ```
 
 3. To run with environment variables:
    ```bash
-   docker run -p 8000:8000 -e DATABASE_URL=sqlite:///.test.db docu_read
+   docker run -p 8000:8000 -e DATABASE_URL=sqlite:///.test.db backend_template 
    ```
 
    You can add multiple environment variables using the `-e` flag for each variable.
@@ -149,7 +149,7 @@ When you need to change the database schema (e.g., add a table, add a column, ch
     *This will create a new file in `migrations/versions/`.*
 
 3.  **Review the Generated Script:** **This is a critical step!** Open the newly generated migration script in `migrations/versions/`. Carefully review the `upgrade()` and `downgrade()` functions. Autogenerate is helpful but not perfect; it might miss certain changes (like server defaults, complex constraints) or generate things you didn't intend. Modify the script manually if needed.
-Since we are using SQLModel, the import for that needs most-likely to be added manually.
+Since we are using `SQLModel` in the project, the import for `SQLModel` needs most-likely to be added manuall, because normally it expectes SQLAlchemy.
 
 4.  **Apply the Migration:** Run the upgrade command to apply the new migration script (and any other pending ones) to your database:
     ```bash
