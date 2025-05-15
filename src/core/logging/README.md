@@ -1,6 +1,6 @@
-# DocuRead Logging System
+# Logging System
 
-The logging system in DocuRead is designed to be modular, extensible, and configuration-driven. This document explains how to use the logging system, configure it for different environments, and extend it with custom components.
+The logging system is designed to be modular, extensible, and configuration-driven. This document explains how to use the logging system, configure it for different environments, and extend it with custom components.
 
 ## Architecture
 
@@ -103,7 +103,7 @@ class CustomHandler(HandlerBase):
     def __init__(self, level=None):
         super().__init__(level)
         # Custom initialization
-        
+
     def get_handler(self) -> logging.Handler:
         # Create and return your custom handler
         handler = logging.Handler()  # Replace with your actual handler
@@ -139,4 +139,5 @@ class CustomFormatter(FormatterBase):
 2. **Add context**: Use the `extra` parameter to add contextual information to logs.
 3. **Environment-specific configuration**: Use different handlers and log levels for development vs. production.
 4. **Test all components**: Ensure each formatter and handler has proper unit tests.
-5. **Structure logs**: Consider using structured logging (e.g., JSON) for machine readability. 
+5. **Structure logs**: Consider using structured logging (e.g., JSON) for machine readability.
+

@@ -1,1 +1,2 @@
-"""Tests for the DocuRead application.""" 
+"""Tests for the application."""
+

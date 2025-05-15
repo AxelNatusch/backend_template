@@ -1,6 +1,6 @@
-# DocuRead Tests
+# Tests
 
-This directory contains tests for the DocuRead application.
+This directory contains tests for the application.
 The directory/file structure should mimic the application structure.
 
 ## Example Structure
@@ -10,7 +10,6 @@ The directory/file structure should mimic the application structure.
     - `test_formatters.py` - Tests for log formatters
     - `test_handlers.py` - Tests for log handlers
     - `test_logger.py` - Tests for the LoggingManager
-
 
 ## Running Tests
 
@@ -51,6 +50,7 @@ The `conftest.py` file at the root of the tests directory contains shared pytest
 ### Available Fixtures
 
 - `client()`: Returns a FastAPI TestClient instance for testing API endpoints without starting a server.
+
   ```python
   def test_read_main(client):
       response = client.get("/")
@@ -64,7 +64,7 @@ The `conftest.py` file at the root of the tests directory contains shared pytest
       document = Document(title="Test Document")
       db_session.add(document)
       db_session.commit()
-      
+
       # Query to verify
       saved_document = db_session.get(Document, document.id)
       assert saved_document.title == "Test Document"
@@ -93,4 +93,5 @@ For HTML coverage reports:
 
 ```bash
 pytest --cov=src --cov-report=html
-``` 
+```
+
