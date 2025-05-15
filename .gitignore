@@ -6,6 +6,15 @@ __pycache__/
 # C extensions
 *.so
 
+# Logs
+logs/
+logs/*
+
+# Database
+db/
+db/*
+*.db
+
 # Pycache
 __pycache__/
 */__pycache__/
