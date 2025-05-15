@@ -77,7 +77,6 @@ dependencies = [
     { name = "pytest" },
     { name = "pytest-asyncio" },
     { name = "pytest-cov" },
-    { name = "seqlog" },
     { name = "sqlmodel" },
 ]
 
@@ -90,7 +89,6 @@ requires-dist = [
     { name = "pytest", specifier = ">=8.3.5" },
     { name = "pytest-asyncio", specifier = ">=0.26.0" },
     { name = "pytest-cov", specifier = ">=6.1.1" },
-    { name = "seqlog", specifier = ">=0.4.0" },
     { name = "sqlmodel", specifier = ">=0.0.24" },
 ]
 
@@ -1181,20 +1179,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/fc/9e/73b14aed38ee1f62cd30ab93cd0072dec7fb01f3033d116875ae3e7b8b44/s3transfer-0.12.0.tar.gz", hash = "sha256:8ac58bc1989a3fdb7c7f3ee0918a66b160d038a147c7b5db1500930a607e9a1c", size = 149178 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/89/64/d2b49620039b82688aeebd510bd62ff4cdcdb86cbf650cc72ae42c5254a3/s3transfer-0.12.0-py3-none-any.whl", hash = "sha256:35b314d7d82865756edab59f7baebc6b477189e6ab4c53050e28c1de4d9cce18", size = 84773 },
-]
-
-[[package]]
-name = "seqlog"
-version = "0.4.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "python-dateutil" },
-    { name = "pyyaml" },
-    { name = "requests" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/a1/08/adfa151a391c6ffe8a5af1f29a48d77b7701272bade7f538ed5017f426f4/seqlog-0.4.0.tar.gz", hash = "sha256:769af0e6629cd04f5e3633f52d2c0ac19cfd40ebe5516819b40ff93c77c40d0b", size = 32503 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/2f/2c/be0667f2fac60a9dafdbf9da6a577e3a1941ad0bc4279bdddce49ca62c46/seqlog-0.4.0-py2.py3-none-any.whl", hash = "sha256:4c34442238dcfe0257082bb0808c1d0e270e83743b6d2f2cac5fe75f10512f36", size = 15540 },
 ]
 
 [[package]]
