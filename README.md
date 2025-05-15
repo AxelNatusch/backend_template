@@ -1,4 +1,85 @@
-# backend template
+# Backend Template
+
+![Python Version](https://img.shields.io/badge/python-3.12+-blue.svg)
+![FastAPI Version](https://img.shields.io/badge/FastAPI-0.115+-green.svg)
+![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)
+
+## Project Overview
+
+**Backend Template** (v0.1.0) is a robust and feature-rich backend service foundation, built with Python and [FastAPI](https://fastapi.tiangolo.com/). It provides a comprehensive starting point for developing modern web APIs, with a strong emphasis on authentication, developer experience, and best practices.
+
+This template is designed to be easily extensible, allowing developers to quickly build upon its core functionalities to create sophisticated backend applications.
+
+## Core Features
+
+This template comes packed with essential features to accelerate your development:
+
+### Authentication & Authorization
+*   **JWT-based Authentication:** Secure user registration (admin-initiated), login (username/password), and token refresh mechanisms.
+*   **API Key Authentication:** Support for API key-based access to protected endpoints.
+*   **User Context:** Endpoints to retrieve details of the currently authenticated user (via JWT or API Key).
+*   **Admin-Protected Routes:** Example of restricting access to certain operations (e.g., user registration) to admin users.
+
+### API Key Management
+*   **Full Lifecycle Management:** Authenticated users can create, list, revoke (by key or ID), and permanently delete their API keys.
+*   **Key Naming & Expiry:** Support for naming API keys for better organization and setting optional expiration dates.
+
+### Database
+*   **ORM with SQLModel:** Modern, intuitive data modeling and interaction using [SQLModel](https://sqlmodel.tiangolo.com/), which combines Pydantic and SQLAlchemy.
+*   **Database Migrations with Alembic:** Robust schema migration management using [Alembic](https://alembic.sqlalchemy.org/), allowing for easy database evolution.
+
+### Developer Experience (DX) & Operations
+*   **`uv` Package Management:** Ultra-fast and efficient dependency management with [uv](https://github.com/astral-sh/uv).
+*   **Environment-based Configuration:** Flexible application settings managed via `.env` files (leveraging Pydantic for validation).
+*   **Structured Logging:** Comprehensive logging setup with console and file outputs (including JSONL format), configurable log levels, and easy integration into services.
+*   **Dockerized:** Comes with a `Dockerfile` for easy containerization and deployment.
+*   **CORS Pre-configured:** Cross-Origin Resource Sharing (CORS) middleware is set up for easy frontend integration.
+*   **Hot Reloading:** Development server (`uv run app.py`) supports automatic reloading on code changes.
+
+### Code Quality & Structure
+*   **Modular Design:** Well-organized project structure with a clear separation of concerns (e.g., `src/domains`, `src/core`).
+*   **Dependency Injection:** FastAPI's dependency injection system is utilized for managing dependencies like database sessions and current user context.
+*   **Asynchronous Support:** Built with `async` and `await` for high-performance I/O operations.
+*   **Clear API Versioning:** API endpoints are versioned (e.g., `/v1/...`).
+
+---
+
+## Project Structure Overview
+
+A brief overview of the key directories and files:
+
+- `/.venv/`: Virtual environment managed by `uv` (typically not committed).
+- `/logs/`: Application log files (primarily for development, also not typically committed).
+- `/migrations/`: Alembic database migration scripts and environment configuration.
+    - `/versions/`: Individual migration script files.
+    - `env.py`: Alembic runtime environment configuration.
+- `/src/`: Contains the core application source code.
+    - `/api/`: API layer, including endpoint definitions and routing logic.
+        - `/dependencies/`: Reusable API dependencies (e.g., for authentication).
+        - `/routers/`: FastAPI routers for different API modules or domains.
+    - `/core/`: Core application logic, configuration, and utilities.
+        - `/auth/`: Authentication-specific core components (e.g., password hashing).
+        - `/config/`: Application settings management (e.g., `settings.py`).
+        - `/db/`: Database connection, session management, and initialization logic.
+        - `/exceptions/`: Custom application exceptions.
+        - `/logging/`: Logging configuration, formatters, and handlers.
+    - `/domains/`: Business logic and models for different application domains (e.g., `auth`).
+        - `/auth/`: Specific logic, models, and API definitions for the authentication domain.
+            - `/api/`: FastAPI routers and request/response models for authentication.
+            - `/models/`: SQLModel/Pydantic models for authentication (e.g., `User`, `APIKey`).
+            - `/services/`: Business logic services for authentication.
+- `/tests/`: Automated tests for the application, mirroring the `src/` structure.
+- `app.py`: Main entry point to run the Uvicorn server for the FastAPI application.
+- `alembic.ini`: Configuration file for Alembic database migrations.
+- `Dockerfile`: Instructions for building the Docker image for the application.
+- `example.env`: Template for environment variables.
+- `LICENSE`: Project license file.
+- `pyproject.toml`: Project metadata and dependencies, used by `uv`.
+- `pytest.ini`: Configuration for `pytest`.
+- `README.md`: This file!
+- `uv.lock`: Lock file generated by `uv` for reproducible dependencies.
+
+---
 
 ## Package Management
 

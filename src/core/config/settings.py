@@ -9,9 +9,9 @@ class Settings(BaseModel):
     """
 
     # Base settings
-    APP_NAME: str = "DocuRead"
+    APP_NAME: str = "Backend Template"
     APP_VERSION: str = "0.1.0"
-    APP_DESCRIPTION: str = "Backend service for DocuRead"
+    APP_DESCRIPTION: str = "Backend Template"
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
     DEBUG: bool = ENVIRONMENT == "development"
 
