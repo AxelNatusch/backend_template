@@ -45,38 +45,54 @@ source .venv/Scripts/activate  # On Windows
 
 ### Environment Setup
 
-1. Create a `.env` file in the project root with the following variables (you can use example.env as template): 
-   ```
-   # Required
-   DATABASE_URL=sqlite:///./test.db  # Default SQLite URL for development
-   ENVIRONMENT=development  # Sets the application environment
-   
-   # Optional
-   CORS_ORIGINS=http://localhost:3000,http://localhost:8000  # Allowed origins for CORS
-   ```
+Follow these steps to set up your local development environment:
 
-2. Install dependencies:
-   ```bash
-   uv sync
-   ```
+1.  **Create `.env` File:**
+    Copy the `example.env` file to a new file named `.env` in the project root.
+    ```
+    cp example.env .env
+    ```
+    Update the variables in `.env` as needed. For local development, the default `DATABASE_URL=sqlite:///./test.db` is usually sufficient.
+    ```
+    # .env (example)
+    # Required
+    DATABASE_URL=sqlite:///./test.db  # Default SQLite URL for development
+    ENVIRONMENT=development  # Sets the application environment
+    
+    # Optional
+    CORS_ORIGINS=http://localhost:3000,http://localhost:8000  # Allowed origins for CORS
+    ```
 
-3. Activate the virtual environment:
-   ```bash
-   # on Linux/Mac
-   source .venv/bin/activate
-   # on Windows
-   source .venv\Scripts\activate
-   ```
+2.  **Install Dependencies:**
+    Ensure `uv` is installed (see [Package Management](#package-management)). Then, install project dependencies:
+    ```bash
+    uv sync
+    ```
+
+3.  **Activate Virtual Environment:**
+    ```bash
+    # on Linux/Mac
+    source .venv/bin/activate
+    # on Windows
+    source .venv\Scripts\activate
+    ```
+
+4.  **Initialize Database Schema (Alembic):**
+    Before running the application for the first time, or if you've pulled changes that include new migrations, you need to apply database migrations. This will create the SQLite file (if it doesn't exist) and bring the schema up to date:
+    ```bash
+    alembic upgrade head
+    ```
+    *(For more details on database migrations, see the [Database Migrations (Alembic)](#database-migrations-alembic) section below.)*
 
 ### Running the Application
 
-Start the development server with hot-reload:
+Once your environment is set up and the database is initialized:
 
-```bash
-uv run app.py
-```
-
-The FastAPI application will start on http://localhost:8000 with automatic reload on code changes.
+1.  **Start the Development Server:**
+    ```bash
+    uv run app.py
+    ```
+    The FastAPI application will start on `http://localhost:8000` (or the port configured in your `.env` or application settings). The server will typically have hot-reload enabled, meaning changes to your code will automatically restart the server.
 
 ### API Documentation
 
@@ -114,16 +130,9 @@ This project uses Alembic to manage database schema migrations. Alembic provides
 
 The Alembic environment is configured in `alembic.ini` and `migrations/env.py`. Migration scripts are stored in the `migrations/versions/` directory.
 
-### Initial Local Setup (SQLite)
+### Initial Setup (Covered in Development Section)
 
-For local development, you will typically use a new SQLite database file (`test.db` by default, defined in `.env`). To initialize this database with the current schema:
-
-1.  **Ensure `.env` is configured:** Make sure your `.env` file exists and `DATABASE_URL` points to your desired SQLite file (e.g., `DATABASE_URL=sqlite:///./test.db`).
-2.  **Activate Virtual Environment:** Make sure your environment is active.
-3.  **Run Initial Migration:** Execute the following command. This will create the SQLite file (if it doesn't exist) and apply all existing migration scripts to bring the schema up to date:
-    ```bash
-    alembic upgrade head
-    ```
+The initial database setup (creating the database and applying all migrations) is part of the [Environment Setup](#environment-setup) instructions. Ensure you have run `alembic upgrade head` after setting up your environment and before running the application for the first time.
 
 ### Workflow for Schema Changes
 
