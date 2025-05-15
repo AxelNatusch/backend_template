@@ -5,6 +5,17 @@
 ![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)
 
 ## Project Overview
+### Technology Stack and Features
+
+- ⚡ [**FastAPI**](https://fastapi.tiangolo.com) for the Python backend API.
+    - 🧰 [SQLModel](https://sqlmodel.tiangolo.com) for the Python SQL database interactions (ORM).
+    - 🔍 [Pydantic](https://docs.pydantic.dev), used by FastAPI, for the data validation and settings management.
+    - 💾 [SQLLite](https://www.sqlite.org) as the SQL database for Development (easy extendable to any other Relational Database like Postgresql).
+- 🐋 [Docker](https://www.docker.com) for development and production.
+- 🔒 Secure password hashing by default.
+- 🔑 JWT (JSON Web Token) authentication.
+- ✅ Tests with [Pytest](https://pytest.org).
+
 
 **Backend Template** (v0.1.0) is a robust and feature-rich backend service foundation, built with Python and [FastAPI](https://fastapi.tiangolo.com/). It provides a comprehensive starting point for developing modern web APIs, with a strong emphasis on authentication, developer experience, and best practices.
 
