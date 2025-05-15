@@ -2,7 +2,6 @@ import logging
 import os
 import tempfile
 from io import StringIO
-from unittest.mock import patch, MagicMock
 
 from src.core.logging.formatters import StandardFormatter, JsonFormatter
 from src.core.logging.handlers import ConsoleHandler, FileHandler
