@@ -10,7 +10,7 @@
 - ⚡ [**FastAPI**](https://fastapi.tiangolo.com) for the Python backend API.
     - 🧰 [SQLModel](https://sqlmodel.tiangolo.com) for the Python SQL database interactions (ORM).
     - 🔍 [Pydantic](https://docs.pydantic.dev), used by FastAPI, for the data validation and settings management.
-    - 💾 [SQLLite](https://www.sqlite.org) as the SQL database for Development (easy extendable to any other Relational Database like Postgresql).
+    - 💾 [SQLite](https://www.sqlite.org) as the SQL database for Development (easy extendable to any other Relational Database like Postgresql).
 - 🐋 [Docker](https://www.docker.com) for development and production.
 - 🔒 Secure password hashing by default.
 - 🔑 JWT (JSON Web Token) authentication.
