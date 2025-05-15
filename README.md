@@ -45,7 +45,7 @@ source .venv/Scripts/activate  # On Windows
 
 ### Environment Setup
 
-1. Create a `.env` file in the project root with the following variables:
+1. Create a `.env` file in the project root with the following variables (you can use example.env as template): 
    ```
    # Required
    DATABASE_URL=sqlite:///./test.db  # Default SQLite URL for development
@@ -53,10 +53,6 @@ source .venv/Scripts/activate  # On Windows
    
    # Optional
    CORS_ORIGINS=http://localhost:3000,http://localhost:8000  # Allowed origins for CORS
-   
-   # SEQLOG Config
-    SEQ_URL=""
-    SEQ_API_KEY=""
    ```
 
 2. Install dependencies:
