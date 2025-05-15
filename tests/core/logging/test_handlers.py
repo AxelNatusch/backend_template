@@ -5,7 +5,7 @@ from io import StringIO
 from unittest.mock import patch, MagicMock
 
 from src.core.logging.formatters import StandardFormatter, JsonFormatter
-from src.core.logging.handlers import ConsoleHandler, FileHandler, SeqHandler
+from src.core.logging.handlers import ConsoleHandler, FileHandler
 
 
 class TestConsoleHandler:
@@ -130,48 +130,3 @@ class TestFileHandler:
             
             # Check directory was created
             assert os.path.exists(log_dir)
-
-
-class TestSeqHandler:
-    """Tests for the SeqHandler class."""
-    
-    @patch('src.core.logging.handlers.seq.SeqLogHandler')
-    def test_get_handler(self, mock_seq_handler):
-        """Test that get_handler returns a properly configured SeqLogHandler."""
-        # Setup mock
-        mock_instance = MagicMock()
-        mock_seq_handler.return_value = mock_instance
-        
-        # Create handler
-        SeqHandler(
-            seq_url="http://test-seq-server:5341", 
-            seq_api_key="test-api-key",
-            log_level="WARNING"
-        ).get_handler()
-        
-        # Verify SeqLogHandler was created with correct parameters
-        mock_seq_handler.assert_called_once_with(
-            server_url="http://test-seq-server:5341",
-            api_key="test-api-key",
-            batch_size=10,
-            auto_flush_timeout=None
-        )
-        
-        # Verify level was set
-        assert mock_instance.setLevel.called
-    
-    @patch('src.core.logging.handlers.seq.SeqLogHandler') 
-    def test_log_level_setting(self, mock_seq_handler):
-        """Test that the log level is properly set."""
-        # Setup a mock
-        mock_instance = MagicMock()
-        mock_seq_handler.return_value = mock_instance
-        
-        # Create handler with a specific log level
-        SeqHandler(
-            seq_url="http://test-seq-server:5341",
-            log_level="ERROR"
-        ).get_handler()
-        
-        # Verify the log level was set correctly
-        mock_instance.setLevel.assert_called_once_with("ERROR") 

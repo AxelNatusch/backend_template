@@ -3,6 +3,7 @@ from fastapi import FastAPI, Depends, APIRouter, status
 from fastapi.testclient import TestClient
 
 from src.api.dependencies.auth import verify_api_key
+from src.core.db.session import get_db
 from src.domains.auth.models.user import User
 from src.domains.auth.services.api_key_service import APIKeyService
 
@@ -20,6 +21,12 @@ def api_key_app(db_session, test_user):
     """Create a test app with API key authentication."""
     # Create a test app
     app = FastAPI()
+    
+    # Override the get_db dependency for this app
+    async def override_get_db():
+        yield db_session
+    
+    app.dependency_overrides[get_db] = override_get_db
     
     # Add our test router
     app.include_router(router)

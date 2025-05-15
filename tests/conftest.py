@@ -1,16 +1,15 @@
+import os
 import pytest
-from fastapi import FastAPI, Depends, Request, status
+from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
 from sqlmodel import Session, SQLModel, create_engine
 from sqlmodel.pool import StaticPool
-from unittest.mock import MagicMock, patch
 import logging
 
 from src.domains.auth.api.v1.api_key import router as api_key_router
 from src.api.dependencies.auth import get_current_user, get_db
 from src.domains.auth.models.user import User, UserRole
-from src.main import app
 
 
 # Disable logging for tests by default
@@ -41,6 +40,10 @@ def db_session():
 
     with Session(engine) as session:
         yield session
+
+    # Clean up the database after the test
+    SQLModel.metadata.drop_all(engine)
+    engine.dispose() # Close the connection pool
 
 
 @pytest.fixture
