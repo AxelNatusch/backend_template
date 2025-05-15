@@ -28,10 +28,8 @@ class Settings(BaseModel):
 
     # Logging
     LOG_LEVEL: str = "DEBUG" if DEBUG else "INFO"
-    SEQ_URL: str = os.getenv("SEQ_URL", "http://localhost:5341")
-    SEQ_API_KEY: str = os.getenv("SEQ_API_KEY", None)
 
-    API_KEY_PREFIX: str = "dr"
+    API_KEY_PREFIX: str = "bt"
     
     # Admin user settings
     ADMIN_USERNAME: str = os.getenv("ADMIN_USERNAME", "admin")
