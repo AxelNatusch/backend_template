@@ -27,27 +27,27 @@ This template is designed to be easily extensible, allowing to quickly build upo
 This template comes packed with essential features:
 
 ### Authentication & Authorization
-*   **JWT-based Authentication** 
-*   **API Key Authentication** 
-*   **User Management** 
+*   JWT-based Authentication 
+*   API Key Authentication 
+*   User Management 
 
 ### Database
-*   **ORM with [SQLModel](https://sqlmodel.tiangolo.com/)** 
-*   **Database Migrations with [Alembic](https://alembic.sqlalchemy.org/)**
+*   ORM with [SQLModel](https://sqlmodel.tiangolo.com/) 
+*   Database Migrations with [Alembic](https://alembic.sqlalchemy.org/)
 
 ### Developer Experience (DX) & Operations
-*   **[uv](https://github.com/astral-sh/uv) Package Management**
-*   **Environment-based Configuration**
-*   **Full Python Logging Setup**
-*   **Pre-configured base Dockerfile** 
-*   **CORS Pre-configured**
-*   **Hot Reloading out of the Box in Development**
+*   [uv](https://github.com/astral-sh/uv) Package Management
+*   Environment-based Configuration
+*   Full Python Logging Setup
+*   Pre-configured base Dockerfile 
+*   CORS Pre-configured
+*   Hot Reloading out of the Box in Development
 
 ### Code Quality & Structure
-*   **Modular Design** 
-*   **Dependency Injection** 
-*   **Asynchronous Support out of the Box**
-*   **Clear API Versioning**
+*   Modular Design
+*   Dependency Injection
+*   Asynchronous Support out of the Box
+*   Clear API Versioning
 
 ---
 
