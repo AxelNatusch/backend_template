@@ -14,3 +14,8 @@ dependencies = [
     "pytest-cov>=6.1.1",
     "sqlmodel>=0.0.24",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.11.10",
+]

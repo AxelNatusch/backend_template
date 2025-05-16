@@ -1,8 +1,6 @@
 import base64
 import json
-import pytest
 import hashlib
-import re
 import time
 
 from src.core.auth.password import get_password_hash, verify_password
@@ -509,7 +507,7 @@ def test_zero_or_negative_parameters():
             assert stored_params[param_name] > 0, \
                 f"Parameter {param_name} should be positive"
             
-        except (ValueError, TypeError) as e:
+        except (ValueError, TypeError):
             # It's also acceptable if the function raises an error for invalid parameters
             # scrypt may raise different types of exceptions in different versions
             pass
