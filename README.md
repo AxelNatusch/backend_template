@@ -108,7 +108,7 @@ uv sync
 uv python install 3.12
 
 # connect your shell to the virtual environment
-source .venv/bin/activate # On Linux/Mac
+source .venv/bin/activate  # On Linux/Mac
 source .venv/Scripts/activate  # On Windows
 ```
 
