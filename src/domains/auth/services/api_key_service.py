@@ -10,7 +10,9 @@ from src.core.auth.api_key_utils import (
     _is_api_key_expired,
 )
 from src.domains.auth.models.api_key import APIKey, APIKeyPublic, APIKeyResponse
-from src.domains.auth.services.repositories.api_key_repository import APIKeyRepository
+from src.domains.auth.services.repositories.api_key_repository import (
+    APIKeyRepository,
+)
 
 import logging
 
@@ -28,7 +30,7 @@ class APIKeyService:
         self,
         user_id: int,
         name: str = "API Key",
-        expires_in_days: Optional[int] = None
+        expires_in_days: Optional[int] = None,
     ) -> APIKeyResponse:
         """
         Create a new API key for a user.
@@ -72,7 +74,7 @@ class APIKeyService:
             name=db_api_key.name,
             created_at=db_api_key.created_at,
             expires_at=db_api_key.expires_at,
-            user_id=db_api_key.user_id
+            user_id=db_api_key.user_id,
         )
 
     def get_user_api_keys(self, user_id: int) -> List[APIKeyPublic]:
@@ -87,7 +89,7 @@ class APIKeyService:
         """
         logger.info(f"Retrieving API keys for user ID: {user_id}")
         api_keys = self.repository.get_user_api_keys(user_id)
-        
+
         public_keys = [
             APIKeyPublic(
                 id=key.id,
@@ -115,13 +117,13 @@ class APIKeyService:
         Raises:
             HTTPException: If key is invalid, expired, or inactive
         """
-        logger.debug("Attempting to validate API key.") # Avoid logging the key itself
+        logger.debug("Attempting to validate API key.")  # Avoid logging the key itself
         # Hash the provided key
         key_hash = _hash_api_key(api_key)
-        
+
         # Find the key in the database
         db_api_key = self.repository.get_by_key_hash(key_hash)
-        
+
         if not db_api_key:
             logger.warning("API key validation failed: Key hash not found.")
             raise HTTPException(
@@ -129,7 +131,7 @@ class APIKeyService:
                 detail="Invalid API key",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-        
+
         # Check if key is active
         if not db_api_key.is_active:
             logger.warning(f"API key validation failed: Key ID {db_api_key.id} is inactive (revoked).")
@@ -138,7 +140,7 @@ class APIKeyService:
                 detail="API key has been revoked",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-        
+
         # Check if key has expired
         if db_api_key.expires_at and _is_api_key_expired(db_api_key.expires_at):
             logger.warning(f"API key validation failed: Key ID {db_api_key.id} has expired.")
@@ -147,11 +149,11 @@ class APIKeyService:
                 detail="API key has expired",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-        
+
         # Update last used timestamp
         self.repository.update_last_used(db_api_key.id)
         logger.info(f"Successfully validated API key ID: {db_api_key.id} for user ID: {db_api_key.user_id}")
-        
+
         return db_api_key
 
     def revoke_api_key(self, api_key: str, user_id: int) -> bool:
@@ -171,27 +173,30 @@ class APIKeyService:
         logger.info(f"User ID: {user_id} attempting to revoke API key: {api_key[:5]}...")
         hashed_key = _hash_api_key(api_key)
         db_api_key = self.repository.get_by_key_hash(hashed_key)
-        
+
         if not db_api_key:
             logger.warning("Revocation failed: API key not found.")
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="API key not found"
-            )
-        
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="API key not found")
+
         if db_api_key.user_id != user_id:
-            logger.warning(f"Revocation failed: User ID {user_id} not authorized to revoke API key owned by user ID {db_api_key.user_id}.")
+            logger.warning(
+                f"Revocation failed: User ID {user_id} not authorized to revoke API key "
+                f"owned by user ID {db_api_key.user_id}."
+            )
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Not authorized to revoke this API key"
+                detail="Not authorized to revoke this API key",
             )
-        
+
         revoked = self.repository.revoke(db_api_key.id)
         if revoked:
             logger.info(f"Successfully revoked API key: {api_key[:5]}... by user ID: {user_id}")
         else:
-             # This case might indicate the key was already inactive or another issue occurred at the DB level
-             logger.warning(f"Attempt to revoke API key: {api_key[:5]}... by user ID: {user_id} returned false from repository (might be already inactive).")
+            # This case might indicate the key was already inactive or another issue occurred at the DB level
+            logger.warning(
+                f"Attempt to revoke API key: {api_key[:5]}... by user ID: {user_id} "
+                f"returned false from repository (might be already inactive)."
+            )
         return revoked
 
     def revoke_api_key_by_id(self, api_key_id: int, user_id: int) -> bool:
@@ -200,28 +205,30 @@ class APIKeyService:
         """
         logger.info(f"User ID: {user_id} attempting to revoke API key ID: {api_key_id}")
         api_key = self.repository.get_by_id(api_key_id)
-        
+
         if not api_key:
             logger.warning(f"Revocation failed: API key ID {api_key_id} not found.")
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="API key not found"
-            )
-        
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="API key not found")
+
         if api_key.user_id != user_id:
-            logger.warning(f"Revocation failed: User ID {user_id} not authorized to revoke API key ID {api_key_id} owned by user ID {api_key.user_id}.")
+            logger.warning(
+                f"Revocation failed: User ID {user_id} not authorized to revoke API key ID {api_key_id} "
+                f"owned by user ID {api_key.user_id}."
+            )
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Not authorized to revoke this API key"
+                detail="Not authorized to revoke this API key",
             )
 
         revoked = self.repository.revoke(api_key_id)
         if revoked:
             logger.info(f"Successfully revoked API key ID: {api_key_id} by user ID: {user_id}")
         else:
-            logger.warning(f"Attempt to revoke API key ID: {api_key_id} by user ID: {user_id} returned false from repository (might be already inactive).")
+            logger.warning(
+                f"Attempt to revoke API key ID: {api_key_id} by user ID: {user_id} "
+                f"returned false from repository (might be already inactive)."
+            )
         return revoked
-
 
     def delete_api_key_by_id(self, api_key_id: int, user_id: int) -> bool:
         """
@@ -239,26 +246,29 @@ class APIKeyService:
         """
         logger.info(f"User ID: {user_id} attempting to delete API key ID: {api_key_id}")
         api_key = self.repository.get_by_id(api_key_id)
-        
+
         if not api_key:
             logger.warning(f"Deletion failed: API key ID {api_key_id} not found.")
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="API key not found"
-            )
-        
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="API key not found")
+
         if api_key.user_id != user_id:
-            logger.warning(f"Deletion failed: User ID {user_id} not authorized to delete API key ID {api_key_id} owned by user ID {api_key.user_id}.")
+            logger.warning(
+                f"Deletion failed: User ID {user_id} not authorized to delete "
+                f"API key ID {api_key_id} owned by user ID {api_key.user_id}."
+            )
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Not authorized to delete this API key"
+                detail="Not authorized to delete this API key",
             )
-        
+
         deleted = self.repository.delete(api_key_id)
         if deleted:
             logger.info(f"Successfully deleted API key ID: {api_key_id} by user ID: {user_id}")
         else:
-             # This case might indicate the key was already deleted or another issue occurred at the DB level
-            logger.warning(f"Attempt to delete API key ID: {api_key_id} by user ID: {user_id} returned false from repository (might be already deleted).")
+            # This case might indicate the key was already deleted or another issue occurred at the DB level
+            logger.warning(
+                f"Attempt to delete API key ID: {api_key_id} by user ID: {user_id} returned"
+                f"false from repository (might be already deleted)."
+            )
 
-        return deleted 
+        return deleted

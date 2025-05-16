@@ -14,6 +14,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class UserService:
     """
     Service for user-related business logic.
@@ -101,7 +102,6 @@ class UserService:
             logger.info(f"No user found with email: {email}")
         return user
 
-
     def get_user_by_username(self, username: str) -> Optional[User]:
         """
         Get a user by username.
@@ -135,7 +135,10 @@ class UserService:
             logger.info(f"Checking if email {user_data.email} is already registered for another user.")
             existing_user = self.repository.get_by_email(user_data.email)
             if existing_user and existing_user.id != user_id:
-                logger.warning(f"Failed to update user {user_id}. Email {user_data.email} already registered by user {existing_user.id}.")
+                logger.warning(
+                    f"Failed to update user {user_id}. Email {user_data.email} already registered by user "
+                    f"{existing_user.id}."
+                )
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="Email already registered",

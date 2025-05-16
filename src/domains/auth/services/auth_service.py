@@ -5,7 +5,11 @@ Authentication service for login/register operations.
 from fastapi import HTTPException, status
 from sqlmodel import Session
 
-from src.core.auth.jwt import create_access_token, create_refresh_token, verify_token
+from src.core.auth.jwt import (
+    create_access_token,
+    create_refresh_token,
+    verify_token,
+)
 from src.core.auth.password import verify_password
 from src.domains.auth.models.user import UserCreate, UserPublic
 from src.domains.auth.models.user_auth import LoginResponse, Token
@@ -14,6 +18,7 @@ from src.domains.auth.services.user_service import UserService
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 class AuthService:
     """
@@ -120,14 +125,14 @@ class AuthService:
             A Token object containing the new access and refresh tokens.
 
         Raises:
-            HTTPException: If the refresh token is invalid, expired, 
+            HTTPException: If the refresh token is invalid, expired,
                            malformed, or the user is not found/inactive.
         """
         logger.info("Attempting to refresh token.")
         try:
             payload = verify_token(refresh_token_str)
             logger.debug(f"Refresh token payload verified: {payload}")
-            
+
             # Verify token type
             token_type = payload.get("token_type")
             if token_type != "refresh":
@@ -146,10 +151,10 @@ class AuthService:
                     detail="Invalid token payload",
                     headers={"WWW-Authenticate": "Bearer"},
                 )
-            
+
             logger.info(f"Fetching user with ID: {user_id} for token refresh.")
             user = self.user_service.get_user(user_id)
-            
+
             if not user:
                 logger.warning(f"Refresh token failed: User not found for ID: {user_id}")
                 raise HTTPException(
@@ -157,14 +162,14 @@ class AuthService:
                     detail="User not found",
                     headers={"WWW-Authenticate": "Bearer"},
                 )
-                
+
             if not user.is_active:
-                 logger.warning(f"Refresh token failed: User ID {user_id} is inactive.")
-                 raise HTTPException(
+                logger.warning(f"Refresh token failed: User ID {user_id} is inactive.")
+                raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
                     detail="Inactive user",
                     headers={"WWW-Authenticate": "Bearer"},
-                )   
+                )
 
             # Issue new tokens (implementing rotation)
             logger.info(f"Issuing new tokens for user ID: {user_id}")
@@ -177,13 +182,19 @@ class AuthService:
             new_refresh_token = create_refresh_token(user_id=user.id)
 
             logger.info(f"Token refresh successful for user ID: {user.id}")
-            return Token(access_token=new_access_token, refresh_token=new_refresh_token, token_type="bearer")
+            return Token(
+                access_token=new_access_token,
+                refresh_token=new_refresh_token,
+                token_type="bearer",
+            )
 
         except HTTPException as http_exc:
-            logger.warning(f"HTTPException during token refresh: {http_exc.detail} (Status Code: {http_exc.status_code})")
+            logger.warning(
+                f"HTTPException during token refresh: {http_exc.detail} (Status Code: {http_exc.status_code})"
+            )
             raise http_exc
         except Exception as e:
-            logger.exception(f"Unexpected error during token refresh: {e}") 
+            logger.exception(f"Unexpected error during token refresh: {e}")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Could not refresh token",

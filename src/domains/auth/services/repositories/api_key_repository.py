@@ -53,10 +53,7 @@ class APIKeyRepository:
     def get_user_api_keys(self, user_id: int) -> List[APIKey]:
         """Get all API keys for a user."""
         try:
-            statement = select(APIKey).where(
-                APIKey.user_id == user_id, 
-                APIKey.is_active
-            )
+            statement = select(APIKey).where(APIKey.user_id == user_id, APIKey.is_active)
             result = self.session.exec(statement).all()
             return result
         except SQLAlchemyError as e:
@@ -104,4 +101,4 @@ class APIKeyRepository:
             return False
         except SQLAlchemyError as e:
             self.session.rollback()
-            raise DatabaseError(f"Failed to delete API key: {str(e)}") 
+            raise DatabaseError(f"Failed to delete API key: {str(e)}")

@@ -47,7 +47,7 @@ def test_register_success(auth_service):
     assert result.username == "newuser"
     assert result.email == "new@example.com"
     assert result.is_active is True
-    
+
     # Check it's a UserPublic model
     assert hasattr(result, "id")
     assert hasattr(result, "created_at")

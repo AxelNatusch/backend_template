@@ -42,7 +42,7 @@ def db_session():
 
     # Clean up the database after the test
     SQLModel.metadata.drop_all(engine)
-    engine.dispose() # Close the connection pool
+    engine.dispose()  # Close the connection pool
 
 
 @pytest.fixture
@@ -55,13 +55,13 @@ def test_user(db_session):
         role=UserRole.USER,
         is_active=True,
         # Use the password field, not hashed_password
-        password="$2b$12$test_hashed_password_value"
+        password="$2b$12$test_hashed_password_value",
     )
-    
+
     db_session.add(user)
     db_session.commit()
     db_session.refresh(user)
-    
+
     return user
 
 
@@ -70,7 +70,7 @@ def client(test_user, db_session):
     """Return a TestClient instance for testing API endpoints."""
     # Create a test app to ensure routes are registered correctly for tests
     test_app = FastAPI()
-    
+
     # Add exception handler for the test app
     @test_app.exception_handler(Exception)
     async def generic_exception_handler(request: Request, exc: Exception):
@@ -78,24 +78,24 @@ def client(test_user, db_session):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content={"detail": str(exc)},
         )
-    
+
     # Create dependency override functions
     async def override_get_current_user():
         return test_user
-    
+
     async def override_get_db():
         yield db_session
-    
+
     # Setup dependency overrides BEFORE including the router
     # This ensures that the router's endpoints use our overridden dependencies
     test_app.dependency_overrides[get_current_user] = override_get_current_user
     test_app.dependency_overrides[get_db] = override_get_db
-    
+
     # Mount the API key router
     test_app.include_router(
         api_key_router,
-        prefix="/auth/api-keys"  # Use hyphen in path as expected in tests
+        prefix="/auth/api-keys",  # Use hyphen in path as expected in tests
     )
-    
+
     # Return a test client with our configured test app
     yield TestClient(test_app)

@@ -2,7 +2,9 @@ import pytest
 from datetime import datetime, timedelta, timezone
 
 from src.domains.auth.models.api_key import APIKey
-from src.domains.auth.services.repositories.api_key_repository import APIKeyRepository
+from src.domains.auth.services.repositories.api_key_repository import (
+    APIKeyRepository,
+)
 
 
 @pytest.fixture
@@ -54,7 +56,7 @@ def create_test_api_keys_for_user(db_session):
             key_hash="active_hash_2",
             user_id=user_id,
             name="Active Key 2",
-            is_active=True, # No expiration
+            is_active=True,  # No expiration
         ),
         APIKey(
             key_hash="inactive_hash",
@@ -67,7 +69,7 @@ def create_test_api_keys_for_user(db_session):
             user_id=2,
             name="Other User Key",
             is_active=True,
-        )
+        ),
     ]
     db_session.add_all(keys)
     db_session.commit()
@@ -85,25 +87,25 @@ class TestAPIKeyRepository:
     def test_create_api_key(self, api_key_repository, sample_api_key_data):
         """Test creating a new API key."""
         api_key = api_key_repository.create(sample_api_key_data)
-        
+
         assert api_key.id is not None
         assert api_key.key_hash == sample_api_key_data["key_hash"]
         assert api_key.user_id == sample_api_key_data["user_id"]
         assert api_key.name == sample_api_key_data["name"]
-        
+
         # Convert both dates to the same format for comparison (remove timezone info)
         expected_date = sample_api_key_data["expires_at"].replace(tzinfo=None)
         actual_date = api_key.expires_at
-        if hasattr(actual_date, 'tzinfo') and actual_date.tzinfo is not None:
+        if hasattr(actual_date, "tzinfo") and actual_date.tzinfo is not None:
             actual_date = actual_date.replace(tzinfo=None)
-            
+
         assert actual_date == expected_date
         assert api_key.is_active is True
 
     def test_get_by_key_hash(self, api_key_repository, create_test_api_key):
         """Test retrieving an API key by its hash."""
         api_key = api_key_repository.get_by_key_hash(create_test_api_key.key_hash)
-        
+
         assert api_key is not None
         assert api_key.id == create_test_api_key.id
         assert api_key.key_hash == create_test_api_key.key_hash
@@ -111,13 +113,13 @@ class TestAPIKeyRepository:
     def test_get_by_key_hash_not_found(self, api_key_repository):
         """Test retrieving a non-existent API key by hash."""
         api_key = api_key_repository.get_by_key_hash("nonexistent_hash")
-        
+
         assert api_key is None
 
     def test_get_by_id(self, api_key_repository, create_test_api_key):
         """Test retrieving an API key by its ID."""
         api_key = api_key_repository.get_by_id(create_test_api_key.id)
-        
+
         assert api_key is not None
         assert api_key.id == create_test_api_key.id
         assert api_key.key_hash == create_test_api_key.key_hash
@@ -125,7 +127,7 @@ class TestAPIKeyRepository:
     def test_get_by_id_not_found(self, api_key_repository):
         """Test retrieving a non-existent API key by ID."""
         api_key = api_key_repository.get_by_id(999)
-        
+
         assert api_key is None
 
     def test_get_user_api_keys(self, api_key_repository, create_test_api_keys_for_user):
@@ -133,16 +135,16 @@ class TestAPIKeyRepository:
         target_user_id = 1
         # Get all active keys for user ID 1
         user_keys = api_key_repository.get_user_api_keys(target_user_id)
-        
+
         # Expecting the 2 active keys for user 1
         assert len(user_keys) == 2
         assert all(key.user_id == target_user_id for key in user_keys)
         assert all(key.is_active for key in user_keys)
-        
+
         # Check the key hashes are correct
         key_hashes = {key.key_hash for key in user_keys}
         assert key_hashes == {"active_hash_1", "active_hash_2"}
-        
+
         # Verify inactive and other user keys are not present
         assert "inactive_hash" not in key_hashes
         assert "other_user_hash" not in key_hashes
@@ -151,13 +153,13 @@ class TestAPIKeyRepository:
         """Test updating the last_used_at timestamp for an API key."""
         # Initially, last_used_at should be None
         assert create_test_api_key.last_used_at is None
-        
+
         # Update last used timestamp
         api_key_repository.update_last_used(create_test_api_key.id)
-        
+
         # Fetch the updated key
         updated_key = api_key_repository.get_by_id(create_test_api_key.id)
-        
+
         # Check the timestamp was updated
         assert updated_key.last_used_at is not None
         # Don't compare timestamps directly as they might be the same in fast test runs
@@ -166,13 +168,13 @@ class TestAPIKeyRepository:
         """Test revoking (deactivating) an API key."""
         # Initially, the key should be active
         assert create_test_api_key.is_active is True
-        
+
         # Revoke the key
         result = api_key_repository.revoke(create_test_api_key.id)
-        
+
         # Check the result and the updated key
         assert result is True
-        
+
         revoked_key = api_key_repository.get_by_id(create_test_api_key.id)
         assert revoked_key.is_active is False
         # Don't compare timestamps directly as they might be the same in fast test runs
@@ -180,17 +182,17 @@ class TestAPIKeyRepository:
     def test_revoke_nonexistent_key(self, api_key_repository):
         """Test revoking a non-existent API key."""
         result = api_key_repository.revoke(999)
-        
+
         assert result is False
 
     def test_delete(self, api_key_repository, create_test_api_key):
         """Test deleting an API key."""
         # Verify the key exists initially
         assert api_key_repository.get_by_id(create_test_api_key.id) is not None
-        
+
         # Delete the key
         result = api_key_repository.delete(create_test_api_key.id)
-        
+
         # Check the result and that the key was deleted
         assert result is True
         assert api_key_repository.get_by_id(create_test_api_key.id) is None
@@ -198,5 +200,5 @@ class TestAPIKeyRepository:
     def test_delete_nonexistent_key(self, api_key_repository):
         """Test deleting a non-existent API key."""
         result = api_key_repository.delete(999)
-        
-        assert result is False 
+
+        assert result is False

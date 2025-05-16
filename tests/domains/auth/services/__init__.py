@@ -1,1 +1,1 @@
-"""Authentication service tests.""" 
+"""Authentication service tests."""

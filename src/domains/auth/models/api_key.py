@@ -8,6 +8,7 @@ class APIKey(SQLModel, table=True):
     """
     Table to store API keys.
     """
+
     id: int | None = Field(default=None, primary_key=True)
     key_hash: str = Field(index=True, unique=True)
     user_id: int = Field(foreign_key="user.id")
@@ -23,6 +24,7 @@ class APIKeyCreate(BaseModel):
     """
     Schema for creating a new API key.
     """
+
     name: str = PydanticField(..., description="Name or description of the API key")
     expires_in_days: Optional[int] = PydanticField(None, description="Number of days until the key expires")
 
@@ -31,6 +33,7 @@ class APIKeyPublic(BaseModel):
     """
     Schema for returning API key data (without the actual key).
     """
+
     id: int = PydanticField(..., description="API key ID")
     name: str = PydanticField(..., description="Name or description of the API key")
     created_at: datetime = PydanticField(..., description="Timestamp of API key creation")
@@ -43,10 +46,10 @@ class APIKeyResponse(BaseModel):
     """
     Schema for returning a newly created API key (including the actual key).
     """
+
     id: int = PydanticField(..., description="API key ID")
     key: str = PydanticField(..., description="The API key (shown only once)")
     name: str = PydanticField(..., description="Name or description of the API key")
     created_at: datetime = PydanticField(..., description="Timestamp of API key creation")
     expires_at: Optional[datetime] = PydanticField(None, description="Timestamp when the key expires")
     user_id: int = PydanticField(..., description="User ID associated with this key")
-

@@ -67,7 +67,10 @@ class TestJsonFormatter:
 
     def test_additional_fields(self):
         """Test that additional_fields are included in the output."""
-        additional_fields = {"app_name": "backend_template", "environment": "test"}
+        additional_fields = {
+            "app_name": "backend_template",
+            "environment": "test",
+        }
         formatter = JsonFormatter(additional_fields=additional_fields).get_formatter()
         record = create_log_record()
         formatted_message = formatter.format(record)
@@ -123,4 +126,3 @@ class TestJsonFormatter:
 
         # Check timestamp is not included
         assert "timestamp" not in log_data
-

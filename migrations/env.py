@@ -9,16 +9,17 @@ from alembic import context
 
 # --- Load .env file ---
 from dotenv import load_dotenv
+
 load_dotenv()
 # --- End Load .env file ---
 
 # Ensure the 'src' directory is in the Python path
 # Adjust path as necessary relative to the alembic command execution directory (project root)
-sys.path.insert(0, os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '..')))
+sys.path.insert(0, os.path.realpath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
 
 # --- Import SQLModel and your models ---
-from sqlmodel import SQLModel # Import SQLModel  # noqa: E402
+from sqlmodel import SQLModel  # Import SQLModel  # noqa: E402
 from src.domains.auth.models.user import User  # noqa: E402, F401
 from src.domains.auth.models.api_key import APIKey  # noqa: E402, F401
 # Import other models here if you have more...
@@ -39,7 +40,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = SQLModel.metadata # Use SQLModel's metadata
+target_metadata = SQLModel.metadata  # Use SQLModel's metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -88,9 +89,7 @@ def run_migrations_online() -> None:
     connectable = create_engine(db_url, poolclass=pool.NullPool)
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

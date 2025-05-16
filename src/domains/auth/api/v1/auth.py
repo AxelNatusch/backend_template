@@ -19,7 +19,7 @@ from src.domains.auth.models.user import User, UserCreate, UserPublic
 from src.domains.auth.models.user_auth import (
     LoginResponse,
     Token,
-    RefreshTokenRequest
+    RefreshTokenRequest,
 )
 from src.domains.auth.services.auth_service import AuthService
 
@@ -29,10 +29,10 @@ logger = logging.getLogger(__name__)
 
 @router.post("/register", response_model=UserPublic, status_code=status.HTTP_201_CREATED)
 async def register_user(
-    user_data: Annotated[UserCreate, Query(...)], 
+    user_data: Annotated[UserCreate, Query(...)],
     current_user: Annotated[User, Depends(get_current_admin_user)],
     db: Annotated[Session, Depends(get_db)],
-    ):
+):
     """Register a new user."""
     auth_service = AuthService(db)
     try:
@@ -49,8 +49,8 @@ async def register_user(
 
 @router.post("/login", response_model=LoginResponse, status_code=status.HTTP_200_OK)
 async def login_for_access_token(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()], 
-    db: Annotated[Session, Depends(get_db)]
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    db: Annotated[Session, Depends(get_db)],
 ):
     """Authenticate user and return access/refresh tokens."""
     auth_service = AuthService(db)
@@ -62,13 +62,12 @@ async def login_for_access_token(
             headers={"WWW-Authenticate": "Bearer"},
         )
     return login_response
-    
 
 
 @router.post("/refresh", response_model=Token)
 async def refresh_access_token(
-    request_data: Annotated[RefreshTokenRequest, Query(...)], 
-    db: Session = Depends(get_db)
+    request_data: Annotated[RefreshTokenRequest, Query(...)],
+    db: Session = Depends(get_db),
 ):
     """Refresh access token using a refresh token."""
     auth_service = AuthService(db)
@@ -76,7 +75,9 @@ async def refresh_access_token(
 
 
 @router.get("/me", response_model=UserPublic)
-async def read_users_me(current_user: Annotated[User, Depends(get_current_user)]):
+async def read_users_me(
+    current_user: Annotated[User, Depends(get_current_user)],
+):
     """Get current authenticated user's details."""
     return current_user
 

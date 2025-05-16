@@ -1,1 +1,1 @@
-"""Authentication repository tests.""" 
+"""Authentication repository tests."""

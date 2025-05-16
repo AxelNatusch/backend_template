@@ -1,7 +1,8 @@
 """
 Main FastAPI application initialization.
 """
-import logging # Standard library logging
+
+import logging  # Standard library logging
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -49,7 +50,7 @@ def init_logging() -> None:
     # Environment-specific file handlers
     if settings.ENVIRONMENT == "development":
         logs_dir = Path("logs")
-        logs_dir.mkdir(parents=True, exist_ok=True) # Ensure logs directory exists
+        logs_dir.mkdir(parents=True, exist_ok=True)  # Ensure logs directory exists
 
         dev_log_file = logs_dir / "app_dev.log"
         dev_log_file_jsonl = logs_dir / "app_dev.jsonl"
@@ -87,7 +88,7 @@ def init_logging() -> None:
         #         level=settings.LOG_LEVEL,
         #     ),
         # )
-        pass # Explicitly note that console logging is the default for prod for now
+        pass  # Explicitly note that console logging is the default for prod for now
 
     _logging_manager.configure()
 
@@ -121,7 +122,7 @@ def get_logger(name: str) -> logging.Logger:
         # Ensures logging is initialized if get_logger is called
         # before explicit initialization (e.g., from other modules at import time).
         init_logging()
-        if _logging_manager is None: # Should be set by init_logging
+        if _logging_manager is None:  # Should be set by init_logging
             raise RuntimeError("Logging manager failed to initialize. This should not happen.")
     return _logging_manager.get_logger(name)
 
@@ -134,20 +135,18 @@ def create_application() -> FastAPI:
     init_logging()
 
     # 2. Get a logger for the application creation process
-    logger = get_logger(__name__) # Logger for src.main operations
+    logger = get_logger(__name__)  # Logger for src.main operations
 
     # 3. Initialize FastAPI application
     app = FastAPI(
         title=settings.APP_NAME,
         version=settings.APP_VERSION,
         description=settings.APP_DESCRIPTION,
-        openapi_url=f"{settings.API_V1_STR}/openapi.json", # Standard OpenAPI path
-        docs_url=f"{settings.API_V1_STR}/docs",            # Swagger UI
-        redoc_url=f"{settings.API_V1_STR}/redoc",          # ReDoc
+        openapi_url=f"{settings.API_V1_STR}/openapi.json",  # Standard OpenAPI path
+        docs_url=f"{settings.API_V1_STR}/docs",  # Swagger UI
+        redoc_url=f"{settings.API_V1_STR}/redoc",  # ReDoc
     )
-    logger.info(
-        f"FastAPI application '{settings.APP_NAME}' v{settings.APP_VERSION} initialized."
-    )
+    logger.info(f"FastAPI application '{settings.APP_NAME}' v{settings.APP_VERSION} initialized.")
 
     # 4. Initialize Database
     # Consider making create_tables=True configurable via settings for more control
@@ -157,9 +156,7 @@ def create_application() -> FastAPI:
     # 5. Configure CORS (Cross-Origin Resource Sharing)
     if settings.BACKEND_CORS_ORIGINS:
         # Ensure origins are strings, as Pydantic might parse them into other types
-        allow_origins_str = [
-            str(origin).strip() for origin in settings.BACKEND_CORS_ORIGINS
-        ]
+        allow_origins_str = [str(origin).strip() for origin in settings.BACKEND_CORS_ORIGINS]
         app.add_middleware(
             CORSMiddleware,
             allow_origins=allow_origins_str,
@@ -186,6 +183,7 @@ def create_application() -> FastAPI:
             "documentation_swagger": app.docs_url,
             "documentation_redoc": app.redoc_url,
         }
+
     logger.info(f"Root GET endpoint '/' added. Docs at {app.docs_url} and {app.redoc_url}")
 
     return app
@@ -195,7 +193,5 @@ def create_application() -> FastAPI:
 app = create_application()
 
 # Final startup log message using a logger from the configured system
-startup_logger = get_logger(__name__) # Or get_logger("application_lifecycle")
-startup_logger.info(
-    f"'{settings.APP_NAME}' has started successfully in '{settings.ENVIRONMENT}' mode."
-)
+startup_logger = get_logger(__name__)  # Or get_logger("application_lifecycle")
+startup_logger.info(f"'{settings.APP_NAME}' has started successfully in '{settings.ENVIRONMENT}' mode.")

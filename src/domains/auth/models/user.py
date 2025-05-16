@@ -98,18 +98,10 @@ class UserUpdate(BaseModel):
     Schema for updating an existing user.
     """
 
-    username: Optional[str] = PydanticField(
-        None, description="Username for display purposes"
-    )
-    email: Optional[EmailStr] = PydanticField(
-        None, description="Email address for login"
-    )
-    password: Optional[str] = PydanticField(
-        None, description="User password (will be hashed)"
-    )
-    is_active: Optional[bool] = PydanticField(
-        None, description="Whether the user is active"
-    )
+    username: Optional[str] = PydanticField(None, description="Username for display purposes")
+    email: Optional[EmailStr] = PydanticField(None, description="Email address for login")
+    password: Optional[str] = PydanticField(None, description="User password (will be hashed)")
+    is_active: Optional[bool] = PydanticField(None, description="Whether the user is active")
     role: Optional[UserRole] = PydanticField(None, description="User role")
 
 
@@ -120,6 +112,4 @@ class UserPublic(UserBase):
 
     id: int = PydanticField(..., description="User ID")
     is_active: bool = PydanticField(..., description="Whether the user is active")
-    created_at: datetime = PydanticField(
-        ..., description="Timestamp of account creation"
-    )
+    created_at: datetime = PydanticField(..., description="Timestamp of account creation")

@@ -33,9 +33,7 @@ def create_access_token(
         JWT token string
     """
     expires = datetime.now(timezone.utc) + (
-        expires_delta
-        if expires_delta
-        else timedelta(minutes=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES)
+        expires_delta if expires_delta else timedelta(minutes=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES)
     )
 
     to_encode = {
@@ -50,9 +48,7 @@ def create_access_token(
     return encoded_jwt
 
 
-def create_refresh_token(
-    user_id: int, expires_delta: Optional[timedelta] = None
-) -> str:
+def create_refresh_token(user_id: int, expires_delta: Optional[timedelta] = None) -> str:
     """
     Generate a new refresh token.
 

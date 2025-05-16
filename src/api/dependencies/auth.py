@@ -93,30 +93,30 @@ async def verify_api_key(
         HTTPException: If API key is invalid or user not found
     """
     api_key_service = APIKeyService(db)
-    
+
     try:
         # Validate the API key and get the associated API key record
         api_key_record = api_key_service.validate_api_key(api_key)
-        
+
         # Get the user associated with the API key
         user = db.exec(select(User).where(User.id == api_key_record.user_id)).first()
-        
+
         if user is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="User not found",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-            
+
         if not user.is_active:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Inactive user",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-            
+
         return user
-        
+
     except HTTPException:
         # Re-raise HTTPExceptions from the validate_api_key method
         raise

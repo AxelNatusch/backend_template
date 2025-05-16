@@ -1,6 +1,7 @@
 """
 API Key management endpoints.
 """
+
 from fastapi import APIRouter, Depends, status, Path, Body
 from sqlmodel import Session
 from typing import Dict, List, Annotated
@@ -9,7 +10,11 @@ from pydantic import BaseModel
 from src.api.dependencies.auth import get_current_user
 from src.core.db import get_db
 from src.domains.auth.models.user import User
-from src.domains.auth.models.api_key import APIKeyCreate, APIKeyPublic, APIKeyResponse
+from src.domains.auth.models.api_key import (
+    APIKeyCreate,
+    APIKeyPublic,
+    APIKeyResponse,
+)
 from src.domains.auth.services.api_key_service import APIKeyService
 
 router = APIRouter(tags=["api_keys"])
@@ -36,7 +41,7 @@ def create_api_key(
     return api_key_service.create_api_key(
         user_id=current_user.id,
         name=api_key_data.name,
-        expires_in_days=api_key_data.expires_in_days
+        expires_in_days=api_key_data.expires_in_days,
     )
 
 
@@ -91,4 +96,4 @@ def delete_api_key(
     """
     api_key_service = APIKeyService(session)
     deleted = api_key_service.delete_api_key_by_id(api_key_id, current_user.id)
-    return {"success": deleted} 
+    return {"success": deleted}

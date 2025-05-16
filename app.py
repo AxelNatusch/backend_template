@@ -10,9 +10,13 @@ if __name__ == "__main__":
     APP_PORT = int(os.environ.get("PORT", 8000))
 
     require_env_vars_dev = ["DATABASE_URL", "ENVIRONMENT"]
-    require_env_vars_prod = ["DATABASE_URL", "ENVIRONMENT", "CORS_ORIGINS", "JWT_SECRET_KEY"]
+    require_env_vars_prod = [
+        "DATABASE_URL",
+        "ENVIRONMENT",
+        "CORS_ORIGINS",
+        "JWT_SECRET_KEY",
+    ]
 
-    
     if os.environ.get("ENVIRONMENT") == "development":
         for var in require_env_vars_dev:
             if not os.environ.get(var):
@@ -30,4 +34,3 @@ if __name__ == "__main__":
     else:
         env_str = f"ENVIRONMENT={os.environ.get('ENVIRONMENT')}"
         raise ValueError(f"Environment variable {env_str} is not valid")
-
